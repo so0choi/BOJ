@@ -1,22 +1,26 @@
 #include <iostream>
 using namespace std;
-int memo[101][10]={0,};
+int memo[101][11]={0,};
+//i 자리의 j로 끝나는 수  
 long long find_floor(int num){
 	for(int i=1;i<=9;i++)
 		memo[1][i]=1;
-	if(num>=2){
-		for(int i=2;i<=num;i++){
-			for(int j=1;j<=9;j++){
-				memo[i][j] = (memo[i-1][j-1]+memo[i-1][j+1])%1000000000;
-			}
+		
+	for(int i=2;i<=num;i++){
+		//0으로 끝나는 층은 뒤에 1 밖에 못 온다 
+		memo[i][0] = memo[i-1][1];
+		for(int j=1;j<=8;j++){
+			memo[i][j] =( memo[i-1][j-1]+memo[i-1][j+1])%1000000000;
 		}
+		//9로 끝나는 층은 뒤에 8 밖에 못 온다 
+		memo[i][9] = memo[i-1][8];
 	}
-	long long result=0;
-	long long temp;
-	for(int i=1;i<=9;i++){
-		result+=(memo[num][i]%1000000000);
+	long long sum=0;
+	for(int i=0;i<=9;i++){
+		sum += memo[num][i];
+		sum%=1000000000;
 	}
-	return result;
+	return sum;
 }
 int main(){
 	int num;
